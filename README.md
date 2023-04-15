@@ -1,6 +1,6 @@
 # IB-Exam-Review
 
-This project helps students review for their IB exams using OpenAI's GPT-3 language model. It extracts questions and answers from an IB exam markscheme PDF file, and prompts the student to answer those questions. The student's answer is evaluated for correctness and given a score out of the total marks for that question.
+This project helps students review for their IB exams using OpenAI's GPT-3 language model. It extracts questions and answers from an IB exam markscheme PDF file and the IB exam question file, and prompts the student to answer those questions. The student's answer is evaluated for correctness and given a score out of the total marks for that question.
 
 ## Setup
 
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ```
 
 
-4. Download the IB exam markscheme PDF file and place it in the `data` directory.
+4. Download the IB exam markscheme PDF file and exam question PDF file and place it in the `data` directory.
 
 ## Usage
 
