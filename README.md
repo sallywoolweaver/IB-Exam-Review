@@ -7,7 +7,7 @@ This project helps students review for their IB exams using OpenAI's GPT-3 langu
 1. Clone this repository:
 
 ```
-git clone https://github.com/<your-username>/ib-exam-review.git
+git clone https://github.com/sallywoolweaver/IB-Exam-Review.git
 cd ib-exam-review
 ```
 
