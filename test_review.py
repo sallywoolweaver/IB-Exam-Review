@@ -7,8 +7,6 @@ import os
 # Load API keys from .env file
 load_dotenv()
 
-
-
 openai.api_key =  os.getenv("OPEN_API_KEY")
 
 def evaluate_answer(prompt, student_answer, correct_answer, marks):
@@ -35,14 +33,26 @@ def extract_answers(pdf_path):
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             text = page.extract_text()
-            for line in text.split('\n'):
+            lines = text.split('\n')
+            temp_answer = ""
+            for line in lines:
                 if line.strip() and line[0].isdigit() and line[-1] == ']':
-                    answers.append(line)
+                    if temp_answer:
+                        answers.append(temp_answer)
+                    temp_answer = line
+                elif line.strip() and line[0] == '(' and line[-1] == ']':
+                    if temp_answer:
+                        answers.append(temp_answer)
+                    temp_answer = line
+            if temp_answer:
+                answers.append(temp_answer)
 
     return answers
 
 def extract_marks(line):
-    return int(re.search(r'\[(\d+)\]', line).group(1))
+    marks_match = re.search(r'\[(\d+)\]', line)
+    return int(marks_match.group(1)) if marks_match else 0
+
 
 def extract_questions(pdf_path):
     questions = []
@@ -50,26 +60,42 @@ def extract_questions(pdf_path):
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             text = page.extract_text()
-            for line in text.split('\n'):
+            lines = text.split('\n')
+            temp_question = ""
+            for line in lines:
                 if line.strip() and line[0].isdigit() and line[-1] == ']':
-                    marks = extract_marks(line)
-                    questions.append((line, marks))
+                    if temp_question:
+                        marks = extract_marks(temp_question)
+                        questions.append((temp_question, marks))
+                    temp_question = line
+                elif line.strip() and line[0] == '(' and line[-1] == ']':
+                    if temp_question:
+                        marks = extract_marks(temp_question)
+                        questions.append((temp_question, marks))
+                    temp_question = line
+            if temp_question:
+                marks = extract_marks(temp_question)
+                questions.append((temp_question, marks))
 
     return questions
 
-test_file = "/Users/sallywoolweaver/Code/IB Exam Review/Computer_science_paper_1__SL.pdf"
-markscheme_file = "/Users/sallywoolweaver/Code/IB Exam Review/Computer_science_paper_1__SL_markscheme.pdf"
+test_file = "G:\My Drive\Comp Sci\My Programs\ib exam python\IB-Exam-Review\Computer_science_paper_1__SL_Nov_2019.pdf"
+markscheme_file = "G:\My Drive\Comp Sci\My Programs\ib exam python\IB-Exam-Review\Computer_science_paper_1__SL_markscheme_Nov_2019.pdf"
 
 questions = extract_questions(test_file)
 answers = extract_answers(markscheme_file)
 
 for i, (question, marks) in enumerate(questions):
-    student_answer = input(question + "\nYour answer: ")
+    print(f"Question : {question}")
+    mark_scheme = answers[i]
+    #print(f"Mark scheme: {mark_scheme}")
+    # Get the student's answer
+    student_answer = input("Enter your answer (type 'skip' to skip): ")
 
-    correct_answer = answers[i].split(". ")[1].rsplit("[", 1)[0].strip()
-    prompt = question.split(". ")[1].rsplit("[", 1)[0].strip()
     if student_answer == 'skip':
-        print("skipped")
+        print("Skipped.")
     else:
-        feedback = evaluate_answer(prompt, student_answer, correct_answer, marks)
+        # Evaluate the answer and provide feedback
+        feedback = evaluate_answer(question, student_answer, mark_scheme, marks)
         print(feedback)
+
