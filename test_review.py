@@ -14,7 +14,7 @@ def evaluate_answer(prompt, student_answer, correct_answer, marks):
         {"role": "system", "content": "You are a helpful assistant that can evaluate the correctness of student answers. Provide detailed feedback and grade based on the markschemes. Tell the student how many marks they would have received, and if they did not get full marks how they could improve their answer."},
         {"role": "user", "content": f"Question: {prompt} (Total marks: {marks})\nStudent Answer: {student_answer}\nCorrect Answer: {correct_answer}\nProvide marks based on the markscheme and provide detailed feedback."},
     ]
-
+#blash
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=chat_prompt,
